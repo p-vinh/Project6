@@ -1,12 +1,13 @@
 import java.util.Map;
-import java.util.HashMap;
 // Handles the symbol table for the compiler
 public class SymbolTable {
     private Map<String, Integer> symbolTable;
 
     public SymbolTable() {
-        symbolTable = new HashMap<String, Integer>();
+        LoadPredefinedSymbols loader = new LoadPredefinedSymbols();
+        symbolTable = loader.loadPredefinedTable();
     }
+
 
     /**
      * Adds the pair (symbol, address) to the table

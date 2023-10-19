@@ -2,7 +2,17 @@ import java.io.File;
 
 public class HackAssembler {
 
+    public void firstPass() {
 
+    }
+
+    public void secondPass() {
+
+    }
+
+    public void thirdPass() {
+        
+    }
 
 
 

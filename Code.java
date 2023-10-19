@@ -1,9 +1,20 @@
+import java.util.Map;
 
 // Generates binary code for the given input
 public class Code {
-    
-    public Code() {   
+    private Map<String, String> predefComp;
+    private Map<String, String> predefDest;
+    private Map<String, String> predefJump;
+
+    // Generate the predefined table
+    public Code() { 
+        LoadPredefinedSymbols loader = new LoadPredefinedSymbols();  
+        predefDest = loader.loadPredefinedDest();
+        predefComp = loader.loadPredefindComp();
+        predefJump = loader.loadPredefindJump();
     }
+
+
 
     /**
      * Returns the binary code of the dest mnemonic
