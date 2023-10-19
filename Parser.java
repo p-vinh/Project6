@@ -6,27 +6,25 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.util.List;
-
 public class Parser {
+
+
+    private Scanner scanner;
+    private String currLine;
+
+    private enum CommandType {
+        A_COMMAND,
+        C_COMMAND,
+        L_COMMAND
+    }
+
+    private CommandType currCommandType;
 
     /**
      * Encapsulates access to the input code. Reads an assembly language command, parses it, and provides convenient access to the command’s components (fields and symbols).
      * In addition, removes all white space and comments.
      * @param fileName the name of the file to read from
      */
-    private Scanner scanner;
-
-    private enum CommandType {
-        A_COMMAND, C_COMMAND, L_COMMAND
-    }
-
-    private CommandType currCommandType;
-
     public Parser(File fileName) {
         try {
             scanner = new Scanner(fileName);
@@ -44,7 +42,7 @@ public class Parser {
      * Reads the next command from the input and makes it the current command. Should be called only if hasMoreCommands() is true. Initially there is no current command.
      */
     public void advance() {
-        String currLine = scanner.nextLine();
+        currLine = scanner.nextLine();
         currLine = currLine.replaceAll("\\s+", "");
         if (currLine.startsWith("//") || currLine.isEmpty()) {
             advance();
@@ -73,33 +71,52 @@ public class Parser {
      * @return the symbol or decimal Xxx of the current command
      */
     public String symbol() {
+        if (currCommandType == CommandType.A_COMMAND) {
+            return currLine.substring(1);
+        } else if (currCommandType == CommandType.L_COMMAND) {
+            return currLine.substring(1, currLine.length() - 1);
+        } 
         return null;
     }
 
 
     /**
-     * Returns the dest mnemonic in the current C-command (8 possibilities). Should be called only when commandType() is C_COMMAND.
-     * @return the dest mnemonic in the current C-command
+     * Returns the instruction's dest field
+     * @return the instruction's dest field
      */
     public String dest() {
+        if (currLine != null) {
+            if (currLine.contains("=")) {
+                return currLine.split("=")[0];
+            }
+        }
         return null;
     }
 
+
     /**
-     * Returns the comp mnemonic in the current C-command (28 possibilities). Should be called only when commandType() is C_COMMAND.
-     * @return the comp mnemonic in the current C-command
+     * Returns the instruction's comp field
+     * @return the instruction's comp field
      */
     public String comp() {
+        if (currLine != null) {
+            if (currLine.contains("=")) {
+                return currLine.split("=")[1];
+            }
+        }
         return null;
     }
 
     /**
-     * Returns the jump mnemonic in the current C-command (8 possibilities). Should be called only when commandType() is C_COMMAND.
-     * @return the jump mnemonic in the current C-command
+     * Returns the instruction's jump field
+     * @return the instruction's jump field
      */
     public String jump() {
+        if (currLine != null) {
+            if (currLine.contains(";")) {
+                return currLine.split(";")[1];
+            }
+        }
         return null;
     }
-
-
 }
