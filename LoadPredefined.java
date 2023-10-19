@@ -1,9 +1,9 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoadPredefinedSymbols {
+public class LoadPredefined {
 
-    public LoadPredefinedSymbols(){
+    public LoadPredefined(){
     }
 
     public Map<String, Integer> loadPredefinedTable() {

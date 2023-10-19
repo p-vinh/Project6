@@ -1,33 +1,68 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class HackAssembler {
 
-    public void firstPass() {
+    private Parser parser;
+    private Code code;
+    private SymbolTable symbolTable;
 
+    public HackAssembler(File file) {
+        this.parser = new Parser(file);
+        this.code = new Code();
+        this.symbolTable = new SymbolTable();
     }
 
-    public void secondPass() {
 
-    }
+    public void convertToBinary() {
+        try {
+            FileWriter writer = new FileWriter("Prog.hack");
 
-    public void thirdPass() {
-        
+            
+            int lineNum = 1;
+            int numCInstruct = 0;
+            int numAInstruct = 0;
+
+            // First pass
+            while (parser.hasMoreCommands()) {
+                parser.advance();
+                if (parser.commandType() == Parser.CommandType.C_COMMAND) {
+                    numCInstruct++;
+                } else if (parser.commandType() == Parser.CommandType.A_COMMAND) {
+                    numAInstruct++;
+                } else if (parser.commandType() == Parser.CommandType.L_COMMAND) {
+                    symbolTable.addEntry(parser.symbol(), lineNum);
+                }
+                lineNum++;
+            }
+
+            parser.reset(); // Go back to the beginning of the file
+
+            // Second pass
+            int ramAddress = 16;
+
+            while (parser.hasMoreCommands()) {
+                parser.advance();
+                if (parser.commandType() == Parser.CommandType.A_COMMAND) {
+                    String symbol = parser.symbol();
+                    if (!symbol.matches("[0-9]+") && !symbolTable.contains(symbol)) {
+                        // 
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
 
     public static void main(String[] args) {
-        File file = new File("C:\\Users\\vinhp\\OneDrive\\Documents\\GitHub\\nand2tetris\\projects\\06\\add\\Add.asm");
-        Parser parser = new Parser(file);
-
-        while (parser.hasMoreCommands()) {
-            parser.advance();
-            System.out.println(parser.commandType());
-            System.out.println(parser.symbol());
-            System.out.println(parser.dest());
-            System.out.println(parser.comp());
-            System.out.println(parser.jump());
-        }
+        File file = new File(args[0]);
+        HackAssembler assembler = new HackAssembler(file);
+        assembler.convertToBinary();
     }
 }
 

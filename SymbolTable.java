@@ -4,7 +4,7 @@ public class SymbolTable {
     private Map<String, Integer> symbolTable;
 
     public SymbolTable() {
-        LoadPredefinedSymbols loader = new LoadPredefinedSymbols();
+        LoadPredefined loader = new LoadPredefined();
         symbolTable = loader.loadPredefinedTable();
     }
 
@@ -34,7 +34,5 @@ public class SymbolTable {
      */
     public int GetAddress(String symbol) {
         return symbolTable.get(symbol);
-    }
-
-    
+    }    
 }

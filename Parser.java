@@ -12,7 +12,7 @@ public class Parser {
     private Scanner scanner;
     private String currLine;
 
-    private enum CommandType {
+    public enum CommandType {
         A_COMMAND,
         C_COMMAND,
         L_COMMAND
@@ -118,5 +118,9 @@ public class Parser {
             }
         }
         return null;
+    }
+
+    public void reset() {
+        scanner.reset();
     }
 }

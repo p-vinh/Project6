@@ -8,7 +8,7 @@ public class Code {
 
     // Generate the predefined table
     public Code() { 
-        LoadPredefinedSymbols loader = new LoadPredefinedSymbols();  
+        LoadPredefined loader = new LoadPredefined();  
         predefDest = loader.loadPredefinedDest();
         predefComp = loader.loadPredefindComp();
         predefJump = loader.loadPredefindJump();
