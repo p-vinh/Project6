@@ -13,33 +13,93 @@ import java.util.Scanner;
 import java.util.List;
 
 public class Parser {
+
     /**
-     * Writes to a Hack .hack file
-     * @param fileName the name of the file to write to
-     * @return true if the file was written to successfully, false otherwise
+     * Encapsulates access to the input code. Reads an assembly language command, parses it, and provides convenient access to the command’s components (fields and symbols).
+     * In addition, removes all white space and comments.
+     * @param fileName the name of the file to read from
      */
-    public boolean writeFile(String fileName) {
-        return false;
+    private Scanner scanner;
+
+    private enum CommandType {
+        A_COMMAND, C_COMMAND, L_COMMAND
+    }
+
+    private CommandType currCommandType;
+
+    public Parser(File fileName) {
+        try {
+            scanner = new Scanner(fileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("File not found");
+        }
+    }
+
+    public boolean hasMoreCommands() {
+        return scanner.hasNextLine();
     }
 
     /**
-     * Reads from a Hack .asm file and returns a list of strings
-     * @param args the name of the file to read from
-     * 
-     * @return a list of strings representing the lines of the file
+     * Reads the next command from the input and makes it the current command. Should be called only if hasMoreCommands() is true. Initially there is no current command.
      */
-    public List<String> readFile(String fileName) {
-        try {
-            File file = new File(fileName);
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                System.out.println(line);
-            }
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
+    public void advance() {
+        String currLine = scanner.nextLine();
+        currLine = currLine.replaceAll("\\s+", "");
+        if (currLine.startsWith("//") || currLine.isEmpty()) {
+            advance();
+        } else if (currLine.startsWith("@")) {
+            currCommandType = CommandType.A_COMMAND;
+        } else if (currLine.startsWith("(")) {
+            currCommandType = CommandType.L_COMMAND;
+        } else {
+            currCommandType = CommandType.C_COMMAND;
         }
+    }
+
+    /**
+     * Returns the type of the current command:
+     *          A_COMMAND for @Xxx where Xxx is either a symbol or a decimal number
+     *          C_COMMAND for dest=comp;jump
+     *          L_COMMAND (actually, pseudocommand) for (Xxx) where Xxx is a symbol.
+     * @return the type of the current command
+     */
+    public CommandType commandType() {
+        return currCommandType;
+    }
+
+    /**
+     * Returns the symbol or decimal Xxx of the current command @Xxx or (Xxx). Should be called only when commandType() is A_COMMAND or L_COMMAND.
+     * @return the symbol or decimal Xxx of the current command
+     */
+    public String symbol() {
         return null;
     }
+
+
+    /**
+     * Returns the dest mnemonic in the current C-command (8 possibilities). Should be called only when commandType() is C_COMMAND.
+     * @return the dest mnemonic in the current C-command
+     */
+    public String dest() {
+        return null;
+    }
+
+    /**
+     * Returns the comp mnemonic in the current C-command (28 possibilities). Should be called only when commandType() is C_COMMAND.
+     * @return the comp mnemonic in the current C-command
+     */
+    public String comp() {
+        return null;
+    }
+
+    /**
+     * Returns the jump mnemonic in the current C-command (8 possibilities). Should be called only when commandType() is C_COMMAND.
+     * @return the jump mnemonic in the current C-command
+     */
+    public String jump() {
+        return null;
+    }
+
+
 }
