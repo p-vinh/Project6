@@ -15,14 +15,13 @@ public class Code {
     }
 
 
-
     /**
      * Returns the binary code of the dest mnemonic
      * @param mnemonic
      * @return the binary code of the dest mnemonic (3 bits)
      */
     public String dest(String mnemonic) {
-        return null;
+        return predefDest.get(mnemonic);
     }
 
     /**
@@ -31,7 +30,7 @@ public class Code {
      * @return the binary code of the comp mnemonic (7 bits)
      */
     public String comp(String mnemonic) {
-        return null;
+        return predefComp.get(mnemonic);
     }
 
     /**
@@ -40,6 +39,6 @@ public class Code {
      * @return the jump binary code for the given mnemonic (3 bits)
      */
     public String jump(String mnemonic) {
-        return null;
+        return predefJump.get(mnemonic);
     }
 }
