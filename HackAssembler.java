@@ -7,11 +7,13 @@ import java.io.IOException;
 
 public class HackAssembler {
 
+    private File file;
     private Parser parser;
     private Code code;
     private SymbolTable symbolTable;
 
     public HackAssembler(File file) {
+        this.file = file;
         this.parser = new Parser(file);
         this.code = new Code();
         this.symbolTable = new SymbolTable();
@@ -40,7 +42,7 @@ public class HackAssembler {
                 lineNum++;
             }
 
-            parser.reset(); // Go back to the beginning of the file
+            this.parser = new Parser(file); // Go back to the beginning of the file
 
             // Second pass
             int ramAddress = 16;
@@ -64,7 +66,13 @@ public class HackAssembler {
                     } else if (symbol.matches("[0-9]+")) {
                         /* @Xxx where Xxx is a number */
                         command.append("0");
-                        String binary = Integer.toBinaryString(Integer.parseInt(symbol));
+                        int binary = symbolTable.GetAddress(symbol);
+                        String binaryString = Integer.toBinaryString(binary);
+
+                        // Add padding if binaryString is less than 16 bits
+                        int padding = 15 - binaryString.length();
+                        for (int i = 0; i < padding; i++)
+                            command.append("0");
                         command.append(binary);
                         writer.print(command.toString());
                     }

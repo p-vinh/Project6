@@ -29,7 +29,7 @@ public class LoadPredefined {
 
     public Map<String, String> loadPredefinedDest() {
         Map<String, String> predefDest = new HashMap<>(8);
-        predefDest.put("null", "000");
+        predefDest.put(null, "000");
         predefDest.put("M", "001");
         predefDest.put("D", "010");
         predefDest.put("MD", "011");
@@ -43,7 +43,7 @@ public class LoadPredefined {
 
     public Map<String, String> loadPredefindJump() {
         Map<String, String> predefJump = new HashMap<>(8);
-        predefJump.put("null", "000");
+        predefJump.put(null, "000");
         predefJump.put("JGT", "001");
         predefJump.put("JEQ", "010");
         predefJump.put("JGE", "011");
