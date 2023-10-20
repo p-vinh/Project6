@@ -27,7 +27,6 @@ public class Parser {
     public Parser(File fileName) {
         try {
             scanner = new Scanner(fileName);
-            scanner.useDelimiter("\n");
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
             e.printStackTrace();
