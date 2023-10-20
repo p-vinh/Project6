@@ -3,7 +3,6 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.Scanner;
 
 public class Parser {
@@ -12,7 +11,7 @@ public class Parser {
     private Scanner scanner;
     private String currLine;
 
-    public enum CommandType {
+    public static enum CommandType {
         A_COMMAND,
         C_COMMAND,
         L_COMMAND
@@ -29,8 +28,8 @@ public class Parser {
         try {
             scanner = new Scanner(fileName);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
             System.out.println("File not found");
+            e.printStackTrace();
         }
     }
 

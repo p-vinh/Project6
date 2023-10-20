@@ -1,7 +1,9 @@
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.io.IOException;
+
 
 public class HackAssembler {
 
@@ -18,7 +20,7 @@ public class HackAssembler {
 
     public void convertToBinary() {
         try {
-            FileWriter writer = new FileWriter("Prog.hack");
+            PrintWriter writer = new PrintWriter("Prog.hack");
 
             
             int lineNum = 1;
@@ -45,17 +47,46 @@ public class HackAssembler {
 
             while (parser.hasMoreCommands()) {
                 parser.advance();
+                StringBuilder command = new StringBuilder();
                 if (parser.commandType() == Parser.CommandType.A_COMMAND) {
                     String symbol = parser.symbol();
-                    if (!symbol.matches("[0-9]+") && !symbolTable.contains(symbol)) {
-                        // 
+                    if (!symbol.matches("[0-9]+") && symbolTable.contains(symbol)) {
+                        /*  @Xxx where Xxx is a symbol and not a number,
+                        look up Xxx in the symbol table. If the symbol is found in the table, replace it with its numeric meaning and 
+                        complete the command’s translation. */
+                        command.append("0");
+                        // Convert integer to binary
+                        String binary = Integer.toBinaryString(symbolTable.GetAddress(symbol));
+                        command.append(binary);
+                        writer.print(command.toString());
+                    
+
+                    } else if (symbol.matches("[0-9]+")) {
+                        /* @Xxx where Xxx is a number */
+                        command.append("0");
+                        String binary = Integer.toBinaryString(Integer.parseInt(symbol));
+                        command.append(binary);
+                        writer.print(command.toString());
                     }
+                } else if (parser.commandType() == Parser.CommandType.C_COMMAND) {
+                    command.append("111");
+                    String comp = parser.comp();
+                    String dest = parser.dest();
+                    String jump = parser.jump();
+                    command.append(code.comp(comp));
+                    command.append(code.dest(dest));
+                    command.append(code.jump(jump));
+                    writer.print(command.toString());
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+
+            writer.close();
+        } catch (FileNotFoundException fe) {
+            fe.printStackTrace();
         }
     }
+
 
 
 
