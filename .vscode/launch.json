@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "HackAssembler",
+            "request": "launch",
+            "mainClass": "HackAssembler",
+            "projectName": "Project6_afe2c52"
+        },
+        {
+            "type": "java",
             "name": "Launch with Arguments Prompt",
             "request": "launch",
             "mainClass": "",

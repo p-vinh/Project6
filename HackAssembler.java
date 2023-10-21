@@ -25,21 +25,17 @@ public class HackAssembler {
             PrintWriter writer = new PrintWriter("Prog.hack");
 
             
-            int lineNum = 1;
-            int numCInstruct = 0;
-            int numAInstruct = 0;
-
+            int romAddress = 0;
             // First pass
             while (parser.hasMoreCommands()) {
                 parser.advance();
                 if (parser.commandType() == Parser.CommandType.C_COMMAND) {
-                    numCInstruct++;
+                    romAddress++;
                 } else if (parser.commandType() == Parser.CommandType.A_COMMAND) {
-                    numAInstruct++;
+                    romAddress++;
                 } else if (parser.commandType() == Parser.CommandType.L_COMMAND) {
-                    symbolTable.addEntry(parser.symbol(), lineNum);
+                    symbolTable.addEntry(parser.symbol(), romAddress);
                 }
-                lineNum++;
             }
 
             this.parser = new Parser(file); // Go back to the beginning of the file
@@ -52,29 +48,30 @@ public class HackAssembler {
                 StringBuilder command = new StringBuilder();
                 if (parser.commandType() == Parser.CommandType.A_COMMAND) {
                     String symbol = parser.symbol();
-                    if (!symbol.matches("[0-9]+") && symbolTable.contains(symbol)) {
-                        /*  @Xxx where Xxx is a symbol and not a number,
-                        look up Xxx in the symbol table. If the symbol is found in the table, replace it with its numeric meaning and 
-                        complete the command’s translation. */
+                    // @Xxx where Xxx is a symbol
+                    if (!symbol.matches("[0-9]+")) {
+                        // @Xxx where Xxx is a symbol and is not in symbol table
+                        if (!symbolTable.contains(symbol)) {
+                            symbolTable.addEntry(symbol, ramAddress);
+                            ramAddress++;
+                        } else { // @Xxx where Xxx is a symbol and is in symbol table
+                            command.append("0");
+                            String binary = Integer.toBinaryString(symbolTable.GetAddress(symbol));
+                            int padding = 15 - binary.length();
+                            for (int i = 0; i < padding; i++)
+                                command.append("0");
+                            command.append(binary);
+                            writer.println(command.toString());
+                        }
+                    } else if (symbol.matches("[0-9]+")) { // @Xxx where Xxx is a number
                         command.append("0");
-                        // Convert integer to binary
-                        String binary = Integer.toBinaryString(symbolTable.GetAddress(symbol));
-                        command.append(binary);
-                        writer.print(command.toString());
-                    
-
-                    } else if (symbol.matches("[0-9]+")) {
-                        /* @Xxx where Xxx is a number */
-                        command.append("0");
-                        int binary = symbolTable.GetAddress(symbol);
-                        String binaryString = Integer.toBinaryString(binary);
-
+                        String binary = Integer.toBinaryString(Integer.parseInt(symbol));
                         // Add padding if binaryString is less than 16 bits
-                        int padding = 15 - binaryString.length();
+                        int padding = 15 - binary.length();
                         for (int i = 0; i < padding; i++)
                             command.append("0");
                         command.append(binary);
-                        writer.print(command.toString());
+                        writer.println(command.toString());
                     }
                 } else if (parser.commandType() == Parser.CommandType.C_COMMAND) {
                     command.append("111");
@@ -84,7 +81,7 @@ public class HackAssembler {
                     command.append(code.comp(comp));
                     command.append(code.dest(dest));
                     command.append(code.jump(jump));
-                    writer.print(command.toString());
+                    writer.println(command.toString());
                 }
             }
 

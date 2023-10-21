@@ -42,8 +42,9 @@ public class Parser {
      */
     public void advance() {
         currLine = scanner.nextLine();
-        currLine = currLine.replaceAll("\\s+", "");
-        if (currLine.startsWith("//") || currLine.isEmpty()) {
+        currLine = currLine.replaceAll("\\s+|//.*", ""); // Remove comments
+        
+        if (currLine.isEmpty()) {
             advance();
         } else if (currLine.startsWith("@")) {
             currCommandType = CommandType.A_COMMAND;
@@ -101,6 +102,8 @@ public class Parser {
         if (currLine != null) {
             if (currLine.contains("=")) {
                 return currLine.split("=")[1];
+            } else if (currLine.contains(";")) {
+                return currLine.split(";")[0];
             }
         }
         return null;
