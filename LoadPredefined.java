@@ -91,6 +91,4 @@ public class LoadPredefined {
 
         return predefComp;
     }
-
-
 }

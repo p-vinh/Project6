@@ -54,25 +54,10 @@ public class HackAssembler {
                             symbolTable.addEntry(symbol, ramAddress);
                             writer.println(constructBinaryPadding(ramAddress));
                             ramAddress++;
-                        } else { // @Xxx where Xxx is a symbol and is in symbol table
-                            command.append("0");
-                            String binary = Integer.toBinaryString(symbolTable.GetAddress(symbol));
-                            int padding = 15 - binary.length();
-                            for (int i = 0; i < padding; i++)
-                                command.append("0");
-                            command.append(binary);
-                            writer.println(command.toString());
-                        }
-                    } else if (symbol.matches("[0-9]+")) { // @Xxx where Xxx is a number
-                        command.append("0");
-                        String binary = Integer.toBinaryString(Integer.parseInt(symbol));
-                        // Add padding if binaryString is less than 16 bits
-                        int padding = 15 - binary.length();
-                        for (int i = 0; i < padding; i++)
-                            command.append("0");
-                        command.append(binary);
-                        writer.println(command.toString());
-                    }
+                        } else // @Xxx where Xxx is a symbol and is in symbol table
+                            writer.println(constructBinaryPadding(symbolTable.GetAddress(symbol)));
+                    } else if (symbol.matches("[0-9]+"))// @Xxx where Xxx is a number                        
+                        writer.println(constructBinaryPadding(Integer.parseInt(symbol)));
                 } else if (parser.commandType() == Parser.CommandType.C_COMMAND) {
                     command.append("111");
                     String comp = parser.comp();
