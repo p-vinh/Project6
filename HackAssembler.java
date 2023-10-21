@@ -2,7 +2,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.IOException;
 
 
 public class HackAssembler {
@@ -53,6 +52,7 @@ public class HackAssembler {
                         // @Xxx where Xxx is a symbol and is not in symbol table
                         if (!symbolTable.contains(symbol)) {
                             symbolTable.addEntry(symbol, ramAddress);
+                            writer.println(constructBinaryPadding(ramAddress));
                             ramAddress++;
                         } else { // @Xxx where Xxx is a symbol and is in symbol table
                             command.append("0");
@@ -93,7 +93,17 @@ public class HackAssembler {
     }
 
 
+    private String constructBinaryPadding(int number) {
+        StringBuilder command = new StringBuilder();
+        command.append("0");
+        String binary = Integer.toBinaryString(number);
+        int padding = 15 - binary.length();
+        for (int i = 0; i < padding; i++)
+            command.append("0");
+        command.append(binary);
 
+        return command.toString();
+    }
 
     public static void main(String[] args) {
         File file = new File(args[0]);
